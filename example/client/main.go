@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/savaki/consulapi"
 	"github.com/savaki/consulapi-example/example"
 	"github.com/savaki/consulapi/connect"
 	"google.golang.org/grpc"
@@ -25,7 +26,8 @@ func main() {
 	var (
 		name     = flag.String("name", "example-service", "name of service")
 		n        = flag.Int("n", 1, "number of iterations to execute")
-		resolver = connect.NewResolver(*name)
+		api      = consulapi.NewHealth()
+		resolver = connect.NewResolver(api, *name)
 	)
 	flag.Parse()
 

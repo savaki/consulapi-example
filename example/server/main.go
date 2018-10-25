@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/savaki/consulapi"
 	"github.com/savaki/consulapi-example/example"
 	"github.com/savaki/consulapi/connect"
 	"google.golang.org/grpc"
@@ -54,9 +55,10 @@ func main() {
 		fmt.Println("health check")
 		return nil
 	}
-	closer, err := connect.Register(*name, *port, connect.WithHealthCheckFunc(fn))
+	agent := consulapi.NewAgent()
+	service, err := connect.NewService(agent, *name, *port, connect.WithHealthCheckFunc(fn))
 	check(err)
-	defer closer.Close()
+	defer service.Close()
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, os.Kill)
